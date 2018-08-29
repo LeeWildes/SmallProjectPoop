@@ -10,7 +10,7 @@ app.secret_key = os.urandom(24)
 ## Users
 
 @app.route('/api/login', methods=['GET'])
-def login(user,pass):
+def login():
     return True
 
 
@@ -73,13 +73,14 @@ def db_close(cursor,db):
     cursor.close()
     db.close()
 
-def get_session(user):
-    if user in session:
-        return True
-    else:
-        return False
+# def get_session(user):
+#     if user in session:
+#         return True
+#     else:
+#         return False
+#
+# def end_session(user):
 
-def end_session(user):
 
 if __name__ == "__main__":
     app.run()
