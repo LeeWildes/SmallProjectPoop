@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Contact` (
   `ContactID` INT NOT NULL,
   `Name` VARCHAR(45) NULL,
   `Number` VARCHAR(45) NULL,
+  `Email` VARCHAR(45) NULL,
   `User_UserID` INT NOT NULL,
   PRIMARY KEY (`ContactID`, `User_UserID`),
   INDEX `fk_Contact_User_idx` (`User_UserID` ASC),
