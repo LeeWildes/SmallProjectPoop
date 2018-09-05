@@ -14,9 +14,34 @@ def login():
     return True
 
 
-@app.route('/api/contacts', methods=['GET'])
+#@app.route('/api/contacts', methods=['GET'])
+#def get_contacts():
+#	user = request.data
+#	print(request.data)
+#	return True
+	
+@app.route('/api/contacts/<user>')
 def get_contacts(user):
-    return True
+	#dont forget to sanitize inputs
+	db = db_connect()
+	cursor = db.cursor()
+	print(user)
+	input = str(user)
+	print(input)
+	cursor.execute("SELECT * FROM contact WHERE User_UserID =(%s)", (input,))
+
+	rows2 = cursor.fetchall()
+	resp2 = jsonify(rows2)
+	print(request.headers)
+
+
+	db_close(cursor,db)
+
+	return resp2
+#	return True	
+#	return jsonify(rows)
+	
+	
 
 @app.route('/api/new_user', methods=['PUT'])
 def create_user(user):
@@ -30,6 +55,8 @@ def delete_user(user):
 
 @app.route('/api/update_contact', methods=['POST'])
 def update_contact():
+	#add rest of stuff today
+	#cursor.execute("UPDATE contact SET Name = 'x', Number = xxxxx WHERE ContactID = x AND User_UserID = x;", (input,))
     return True
 
 @app.route('/api/create_contact', methods=['PUT'])
