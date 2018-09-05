@@ -2,43 +2,141 @@ from flask import Flask
 from flask import request, jsonify, Response
 from flask import render_template
 import os
+from passlib.hash import sha256_crypt
+
 import mysql.connector
 
 app = Flask(__name__)
-app.secret_key = os.urandom(24)
 
 ## Users
 
-@app.route('/api/login', methods=['GET'])
-def login():
-    return True
+@app.route('/api/login=<name>&<password>', methods=['GET'])
+def login(name,password):
+    db = db_connect()
+    try:
+
+        cursor = db.cursor(buffered=True)
+
+        cursor.execute("SELECT Password FROM user WHERE UserName=%s;",(name,))
+        if(cursor.rowcount < 1):
+            db_close(cursor,db)
+            return jsonify({"success": False, "message":"Invalid Username"})
+
+        e_password = cursor.fetchone()[0]
+        isPassword = sha256_crypt.verify(password, e_password)
+        if(not isPassword):
+            db_close(cursor,db)
+            return jsonify({"success": False,"message":"Incorrect Password"})
+
+    except Exception as e:
+        db_close(cursor,db)
+        print(e)
+        return jsonify({"success": False,"message":"error"})
+
+    finally:
+        db_close(cursor,db)
+
+    return jsonify({"success": True})
 
 
 @app.route('/api/contacts', methods=['GET'])
 def get_contacts(user):
     return True
 
-@app.route('/api/new_user', methods=['PUT'])
-def create_user(user):
-    return True
+@app.route('/api/create_user<name>&<password>', methods=['PUT'])
+def create_user(name,password):
+    db = db_connect()
+    try:
 
-@app.route('/api/delete_user', methods=['DELETE'])
+        cursor = db.cursor(buffered=True)
+
+        ## checking if username is already in use
+        cursor.execute("SELECT * FROM user WHERE UserName=%s;",(name,))
+        rows = cursor.fetchall()
+        if(len(rows)>0):
+            db_close(cursor,db)
+            return jsonify({"success": False,"message":"Name already exists"})
+
+        ## encrypt password
+        e_password = sha256_crypt.encrypt(password)
+
+        ## Ghetto way to make sure every ID is unique
+        cursor.execute("SELECT MAX(UserID) FROM user;")
+        id = cursor.fetchone()[0]
+        id = int(id or 0) + 1
+
+        ## Add the user
+        cursor.execute("INSERT into user (UserID,UserName,Password) VALUES(%s,%s,%s)",(id,name,e_password))
+
+        ## must commit the changes made to the table
+        db.commit()
+
+    except Exception as e:
+        db_close(cursor,db)
+        print(e)
+        return jsonify({"success": False,"message":e})
+
+    finally:
+        db_close(cursor,db)
+
+    return jsonify({"success": True})
+
+@app.route('/api/delete_user=<user>', methods=['DELETE'])
 def delete_user(user):
-    return True
+    db = db_connect()
+
+    try:
+
+        cursor = db.cursor(buffered=True)
+        cursor.execute("SELECT UserID FROM user WHERE UserName=%s",(user,))
+        user_id = cursor.fetchone()[0]
+
+        cursor.execute("DELETE FROM contact WHERE User_UserID=%s;",(user_id,))
+        ## must commit the changes made to the table
+        db.commit()
+
+        cursor.execute("SELECT * FROM contact WHERE User_UserID=%s",(user_id,))
+        rows = cursor.fetchall()
+        if(len(rows)>0):
+            db_close(cursor,db)
+            return jsonify({"success": False,"message":"Contacts still remain"})
+
+        cursor.execute("DELETE FROM user WHERE UserID=%s;",(user_id,))
+        ## must commit the changes made to the table
+        db.commit()
+
+        cursor.execute("SELECT * FROM user WHERE UserID=%s",(user_id,))
+        rows = cursor.fetchall()
+        if(len(rows)>0):
+            db_close(cursor,db)
+            return jsonify({"success": False,"message":"User not deleted"})
+
+
+        print(request.headers)
+
+    except Exception as e:
+        db_close(cursor,db)
+        print(e)
+        return jsonify({"success": False,"message":e})
+
+    finally:
+        db_close(cursor,db)
+
+    return jsonify({"success": True})
 
 ## Contacts
 
 @app.route('/api/update_contact', methods=['POST'])
 def update_contact():
-    return True
+    return jsonify({"success": True})
 
 @app.route('/api/create_contact', methods=['PUT'])
 def create_contact():
-    return True
+    return jsonify({"success": True})
 
 @app.route('/api/delete_contact', methods=['DELETE'])
 def delete_contact():
-    return True
+    return jsonify({"success": True})
 
 @app.route('/api/users', methods=['GET'])
 def get_all_users():
