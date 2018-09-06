@@ -41,7 +41,7 @@ class Home extends Component{
     // }
 
     deleteContact(){
-        var userDelete = {
+        var userToDelete = {
             userID: this.state.username,
             firstLast: this.state.delete
         }
@@ -50,7 +50,7 @@ class Home extends Component{
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(userDelete)
+            body: JSON.stringify(userToDelete)
         })
         .then(response => response.json())
         .then(response => console.log('Success:', JSON.stringify(response)))
