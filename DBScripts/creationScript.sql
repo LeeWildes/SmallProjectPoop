@@ -25,7 +25,7 @@ USE `mydb` ;
 CREATE TABLE IF NOT EXISTS `mydb`.`User` (
   `UserID` INT NOT NULL,
   `UserName` VARCHAR(45) NULL,
-  `Password` INT(45) NULL,
+  `Password` VARCHAR(45) NULL,
   PRIMARY KEY (`UserID`))
 ENGINE = InnoDB;
 
