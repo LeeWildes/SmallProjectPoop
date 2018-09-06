@@ -84,14 +84,19 @@ class Home extends Component{
         .then(response => response.json())
         .then(responseData => {
             if(responseData.success){
-                <Alert color="success">
-                Successfully added contact!
-                </Alert>
+                return(
+                    <Alert color="success">
+                        Successfully added contact!
+                    </Alert>
+                )
+                
             }
             else{
-                <Alert color="danger">
-                    Error in adding contact
-                </Alert>
+                return(
+                    <Alert color="danger">
+                        Error in adding contact
+                    </Alert>
+                )
             }
         })
     }
