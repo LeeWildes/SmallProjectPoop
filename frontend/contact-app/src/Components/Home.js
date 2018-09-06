@@ -21,24 +21,24 @@ class Home extends Component{
         });
     }
 
-    componentWillMount(){
-        //grabs the contacts before the component is added to the dom
-        fetch('/api/contacts')
-        .then(response => response.json())
-        .then(responseData => {
-            const tmpContacts = [];
-            for(var key in responseData){
-                const contact = JSON.parse(key);
-                tmpContacts.push(contact);
-            }
-            this.setState({
-                contacts: tmpContacts
-            })
-        })
-        .catch(error => {
-            console.log('Error fetching and parsing data.', error);
-        });
-    }
+    // componentWillMount(){
+    //     //grabs the contacts before the component is added to the dom
+    //     fetch('/api/contacts')
+    //     .then(response => response.json())
+    //     .then(responseData => {
+    //         const tmpContacts = [];
+    //         for(var key in responseData){
+    //             const contact = JSON.parse(key);
+    //             tmpContacts.push(contact);
+    //         }
+    //         this.setState({
+    //             contacts: tmpContacts
+    //         })
+    //     })
+    //     .catch(error => {
+    //         console.log('Error fetching and parsing data.', error);
+    //     });
+    // }
 
     deleteContact(){
         var userToDelete = {
@@ -88,7 +88,7 @@ class Home extends Component{
                             <Input placeholder="Phone Number" onChange={(e) => this.getInfo(e, "addNumber")}/>
                             <Input placeholder="Email" onChange={(e) => this.getInfo(e, "addEmail")}/>
                             <InputGroupAddon addonType="append">
-                                <Button outline color="warning">Add</Button>
+                                <Button outline color="warning" onClick={() => this.addContact()}>Add</Button>
                             </InputGroupAddon>
                         </InputGroup>
                     </FormGroup>
