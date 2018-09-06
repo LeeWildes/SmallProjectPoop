@@ -31,7 +31,7 @@ def login(name,password):
     except Exception as e:
         db_close(cursor,db)
         print(e)
-        return jsonify({"success": False,"message":"error"})
+        return jsonify({"success": False,"message":e})
 
     finally:
         db_close(cursor,db)
@@ -43,7 +43,7 @@ def login(name,password):
 def get_contacts(user):
     return True
 
-@app.route('/api/create_user<name>&<password>', methods=['PUT'])
+@app.route('/api/create_user=<name>&<password>', methods=['PUT'])
 def create_user(name,password):
     db = db_connect()
     try:
@@ -125,10 +125,6 @@ def delete_user(user):
     return jsonify({"success": True})
 
 ## Contacts
-
-@app.route('/api/update_contact', methods=['POST'])
-def update_contact():
-    return jsonify({"success": True})
 
 @app.route('/api/create_contact', methods=['PUT'])
 def create_contact():
