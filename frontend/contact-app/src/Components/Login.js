@@ -12,17 +12,14 @@ class Login extends Component{
             redirect: false
         }
     }
-    grabUsername = (e) => {
+
+    getInfo = (e, inputField) => {
         this.setState({
-            username: e.target.value
+            [inputField]: e.target.value
         })
     }
 
-    grabPassword = (e) => {
-        this.setState({
-            password: e.target.value
-        })
-    }
+    //create a method that checks validity before login
 
     setRedirect = () => {
         this.setState({
@@ -42,21 +39,42 @@ class Login extends Component{
         else return null
     }
 
+    createUser(){
+        var user = {
+            username: this.state.username,
+            password: this.state.password
+        }
+        fetch(`http://127.0.0.1:5000/api/create_user=${user.username}&${user.password}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(response => console.log('Success:', JSON.stringify(response)))
+        .catch(error => console.error('Error:', error));
+        this.setRedirect();
+    }
+
+
     render(){
         return(
             <div className="App">
                 <Header login={false} username={this.state.username}/>
-                <Container style={{width:'30vw'}} className="mt-5">
+                <Container style={{width:'40vw'}} className="mt-5">
                     <Form>
                         <FormGroup>
                             <Label for="exampleEmail">Username</Label>
-                            <Input onChange={(e) => this.grabUsername(e)} type="email" name="email" id="exampleEmail"/>
+                            <Input onChange={(e) => this.getInfo(e, "username")} type="username" name="username" id="exampleEmail"/>
                         </FormGroup>
                         <FormGroup>
                             <Label for="examplePassword">Password</Label>
-                            <Input onChange={(e) => this.grabPassword(e)} type="password" name="password" id="examplePassword"/>
+                            <Input onChange={(e) => this.getInfo(e, "password")} type="password" name="password" id="examplePassword"/>
                         </FormGroup>
-                        <Button color="warning" block type="submit" onClick={this.setRedirect}>
+                        <Button color="secondary" block onClick={() => this.createUser()}>
+                            Create User
+                        </Button>
+                        <Button color="warning" block onClick={this.setRedirect}>
                             Login
                         </Button>
                         {this.redirectTo()}
