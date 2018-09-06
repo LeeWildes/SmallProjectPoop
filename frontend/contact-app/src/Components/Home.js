@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react';
-import {Alert, Form, FormGroup, Input, InputGroup, InputGroupAddon, Button} from 'reactstrap';
+import {UncontrolledAlert, Form, FormGroup, Input, InputGroup, InputGroupAddon, Button} from 'reactstrap';
 import Header from './Header';
 
 class Home extends Component{
@@ -12,8 +12,15 @@ class Home extends Component{
             addEmail: '',
             delete: '',
             search: '',
-            contacts: []
+            contacts: [],
+            successDelete: false,
+            successAdd: false
         }
+        this.getInfo = this.getInfo.bind(this);
+        this.deleteContact = this.deleteContact.bind(this);
+        this.addContact = this.addContact.bind(this);
+        this.showDeleteAlert = this.showDeleteAlert.bind(this);
+        this.showAddAlert = this.showAddAlert.bind(this);
     }
     getInfo = (e, stateField) => {
         this.setState({
@@ -53,9 +60,35 @@ class Home extends Component{
             body: JSON.stringify(userToDelete)
         })
         .then(response => response.json())
-        .then(response => console.log('Success:', JSON.stringify(response)))
+        .then(responseData => {
+          if(responseData.success){
+            this.setState({
+              successDelete: true
+            })
+          }
+        })
         .catch(error => console.error('Error:', error));
-        this.verifyDelete();
+    }
+
+    showAddAlert(){
+      if(this.state.successAdd){
+        return(
+          <UncontrolledAlert color="success">
+              Successfully added the contact
+          </UncontrolledAlert>
+        )
+      }
+      else return null
+    }
+    showDeleteAlert(){
+      if(this.state.successDelete){
+        return(
+          <UncontrolledAlert color="success">
+              Successfully deleted the contact
+          </UncontrolledAlert>
+        )
+      }
+      else return null
     }
 
     addContact(){
@@ -74,50 +107,15 @@ class Home extends Component{
             body: JSON.stringify(userToAdd)
         })
         .then(response => response.json())
-        .then(response => console.log('Success:', JSON.stringify(response)))
+        .then(responseData => {
+            if(responseData.success){
+              this.setState({
+                successAdd: true
+              })
+            }
+        })
         .catch(error => console.error('Error:', error));
-        this.verifyAdd();
     }
-
-    verifyAdd() {
-        fetch('http://127.0.0.1:5000/api/create_contact')
-        .then(response => response.json())
-        .then(responseData => {
-            if(responseData.success){
-                return(
-                    <Alert color="success">
-                        Successfully added contact!
-                    </Alert>
-                )
-                
-            }
-            else{
-                return(
-                    <Alert color="danger">
-                        Error in adding contact
-                    </Alert>
-                )
-            }
-        })
-    }
-
-    verifyDelete() {
-        fetch('http://127.0.0.1:5000/api/delete_contact')
-        .then(response => response.json())
-        .then(responseData => {
-            if(responseData.success){
-                <Alert color="success">
-                Successfully deleted contact!
-                </Alert>
-            }
-            else{
-                <Alert color="danger">
-                    Error in deleting contact
-                </Alert>
-            }
-        })
-    }
-
 
     render(){
         return(
@@ -151,6 +149,8 @@ class Home extends Component{
                             </InputGroupAddon>
                         </InputGroup>
                     </FormGroup>
+                    {this.showDeleteAlert()}
+                    {this.showAddAlert()}
                 </Form>
             </Fragment>
         )
