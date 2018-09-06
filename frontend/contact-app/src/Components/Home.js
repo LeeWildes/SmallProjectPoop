@@ -37,11 +37,16 @@ class Home extends Component{
     //     })
     //     .catch(error => {
     //         console.log('Error fetching and parsing data.', error);
+<<<<<<< HEAD
     //     });
+=======
+    //     });
+>>>>>>> 184f6ae196773c5d6770d1fa8292402a9a7f5397
     // }
 
     deleteContact(){
         var userToDelete = {
+            userID = this.state.username,
             firstLast: this.state.delete
         }
         fetch('/api/delete_contact',{
@@ -58,6 +63,7 @@ class Home extends Component{
 
     addContact(){
         var userToAdd = {
+            userID = this.state.username,
             first: this.state.addFirst,
             last: this.state.addLast,
             number: this.state.addNumber,
@@ -88,7 +94,7 @@ class Home extends Component{
                             <Input placeholder="Phone Number" onChange={(e) => this.getInfo(e, "addNumber")}/>
                             <Input placeholder="Email" onChange={(e) => this.getInfo(e, "addEmail")}/>
                             <InputGroupAddon addonType="append">
-                                <Button onClick={() => this.addContact()}>Add</Button>
+                                <Button outline color="warning" onClick={() => this.addContact()}>Add</Button>
                             </InputGroupAddon>
                         </InputGroup>
                     </FormGroup>
