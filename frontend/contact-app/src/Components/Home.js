@@ -55,6 +55,7 @@ class Home extends Component{
         .then(response => response.json())
         .then(response => console.log('Success:', JSON.stringify(response)))
         .catch(error => console.error('Error:', error));
+        this.verifyDelete();
     }
 
     addContact(){
@@ -75,6 +76,41 @@ class Home extends Component{
         .then(response => response.json())
         .then(response => console.log('Success:', JSON.stringify(response)))
         .catch(error => console.error('Error:', error));
+        this.verifyAdd();
+    }
+
+    verifyAdd() {
+        fetch('http://127.0.0.1:5000/api/create_contact')
+        .then(response => respons.json())
+        .then(responseData => {
+            if(responseData.success){
+                <Alert color="success">
+                Successfully added contact!
+                </Alert>
+            }
+            else{
+                <Alert color="danger">
+                    Error in adding contact
+                </Alert>
+            }
+        })
+    }
+
+    verifyDelete() {
+        fetch('http://127.0.0.1:5000/api/delete_contact')
+        .then(response => respons.json())
+        .then(responseData => {
+            if(responseData.success){
+                <Alert color="success">
+                Successfully deleted contact!
+                </Alert>
+            }
+            else{
+                <Alert color="danger">
+                    Error in deleting contact
+                </Alert>
+            }
+        })
     }
 
 
