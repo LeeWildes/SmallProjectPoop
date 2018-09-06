@@ -21,24 +21,24 @@ class Home extends Component{
         });
     }
 
-    componentWillMount(){
-        //grabs the contacts before the component is added to the dom
-        fetch('/api/contacts')
-        .then(response => response.json())
-        .then(responseData => {
-            const tmpContacts = [];
-            for(var key in responseData){
-                const contact = JSON.parse(key);
-                tmpContacts.push(contact);
-            }
-            this.setState({
-                contacts: tmpContacts
-            })
-        })
-        .catch(error => {
-            console.log('Error fetching and parsing data.', error);
-        });
-    }
+    // componentWillMount(){
+    //     //grabs the contacts before the component is added to the dom
+    //     fetch('/api/contacts')
+    //     .then(response => response.json())
+    //     .then(responseData => {
+    //         const tmpContacts = [];
+    //         for(var key in responseData){
+    //             const contact = JSON.parse(key);
+    //             tmpContacts.push(contact);
+    //         }
+    //         this.setState({
+    //             contacts: tmpContacts
+    //         })
+    //     })
+    //     .catch(error => {
+    //         console.log('Error fetching and parsing data.', error);
+    //     });
+    // }
 
     deleteContact(){
         var userToDelete = {
@@ -63,7 +63,7 @@ class Home extends Component{
             number: this.state.addNumber,
             email: this.state.addEmail
         }
-        fetch('/api/create_contact', {
+        fetch('http://127.0.0.1:5000/api/create_contact', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -74,7 +74,7 @@ class Home extends Component{
         .then(response => console.log('Success:', JSON.stringify(response)))
         .catch(error => console.error('Error:', error));
     }
- 
+
 
     render(){
         return(
@@ -88,7 +88,7 @@ class Home extends Component{
                             <Input placeholder="Phone Number" onChange={(e) => this.getInfo(e, "addNumber")}/>
                             <Input placeholder="Email" onChange={(e) => this.getInfo(e, "addEmail")}/>
                             <InputGroupAddon addonType="append">
-                                <Button outline color="warning">Add</Button>
+                                <Button onClick={() => this.addContact()}>Add</Button>
                             </InputGroupAddon>
                         </InputGroup>
                     </FormGroup>
