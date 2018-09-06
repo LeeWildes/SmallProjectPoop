@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react';
-import {Form, FormGroup, Input, InputGroup, InputGroupAddon, Button} from 'reactstrap';
+import {Alert, Form, FormGroup, Input, InputGroup, InputGroupAddon, Button} from 'reactstrap';
 import Header from './Header';
 
 class Home extends Component{
@@ -81,24 +81,29 @@ class Home extends Component{
 
     verifyAdd() {
         fetch('http://127.0.0.1:5000/api/create_contact')
-        .then(response => respons.json())
+        .then(response => response.json())
         .then(responseData => {
             if(responseData.success){
-                <Alert color="success">
-                Successfully added contact!
-                </Alert>
+                return(
+                    <Alert color="success">
+                        Successfully added contact!
+                    </Alert>
+                )
+                
             }
             else{
-                <Alert color="danger">
-                    Error in adding contact
-                </Alert>
+                return(
+                    <Alert color="danger">
+                        Error in adding contact
+                    </Alert>
+                )
             }
         })
     }
 
     verifyDelete() {
         fetch('http://127.0.0.1:5000/api/delete_contact')
-        .then(response => respons.json())
+        .then(response => response.json())
         .then(responseData => {
             if(responseData.success){
                 <Alert color="success">
