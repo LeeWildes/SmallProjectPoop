@@ -137,9 +137,12 @@ def create_contact():
 
         #need to create a contact ID first.
         print(x)
-        cursor = db.cursor()
+        cursor = db.cursor(buffered=True)
         name = str(x["first"]) + " "+ str(x["last"])
-        userId = 1
+        username = x["userID"]
+        print(username)
+        cursor.execute("SELECT UserID FROM user WHERE UserName = %s",(str(username),))
+        userId = cursor.fetchone()[0]
         cursor.execute("SELECT MAX(contactID) FROM contact;")
         id = cursor.fetchone()[0]
         id = int(id or 0) + 1
@@ -169,7 +172,7 @@ def delete_contact():
         #cursor.execute("SELECT User_UserID FROM contact WHERE UserID = %s", (userId))
 
         #delete from the table
-        cursor.execute("DELETE FROM contact WHERE name = %s", (x[name],))
+        cursor.execute("DELETE FROM contact WHERE name = %s", (x["firstLast"],))
         db.commit()
 
     #check if contact deleted

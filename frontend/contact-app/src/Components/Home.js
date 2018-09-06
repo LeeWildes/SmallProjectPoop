@@ -37,19 +37,15 @@ class Home extends Component{
     //     })
     //     .catch(error => {
     //         console.log('Error fetching and parsing data.', error);
-<<<<<<< HEAD
     //     });
-=======
-    //     });
->>>>>>> 184f6ae196773c5d6770d1fa8292402a9a7f5397
     // }
 
     deleteContact(){
         var userToDelete = {
-            userID = this.state.username,
+            userID: this.state.username,
             firstLast: this.state.delete
         }
-        fetch('/api/delete_contact',{
+        fetch('http://127.0.0.1:5000/api/delete_contact',{
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -63,7 +59,7 @@ class Home extends Component{
 
     addContact(){
         var userToAdd = {
-            userID = this.state.username,
+            userID: this.props.location.state.username,
             first: this.state.addFirst,
             last: this.state.addLast,
             number: this.state.addNumber,
