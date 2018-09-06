@@ -41,8 +41,16 @@ def login(name,password):
 
 
 @app.route('/api/contacts', methods=['GET'])
-def get_contacts(user):
-    return True
+def get_contacts():
+    db = db_connect()
+
+    cursor = db.cursor();
+
+    cursor.execute("SELECT * FROM contact")
+
+    rows = cursor.fetchall()
+    resp = jsonify(rows)
+    return resp
 
 @app.route('/api/create_user=<name>&<password>', methods=['PUT'])
 def create_user(name,password):
