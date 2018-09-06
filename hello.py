@@ -40,8 +40,8 @@ def login(name,password):
     return jsonify({"success": True})
 
 
-@app.route('/api/contacts', methods=['GET'])
-def get_contacts():
+@app.route('/api/contacts=<user>', methods=['GET'])
+def get_contacts(user):
     db = db_connect()
 
     cursor = db.cursor();

@@ -28,28 +28,28 @@ class Home extends Component{
         });
     }
 
-    // componentWillMount(){
-    //     //grabs the contacts before the component is added to the dom
-    //     fetch('/api/contacts')
-    //     .then(response => response.json())
-    //     .then(responseData => {
-    //         const tmpContacts = [];
-    //         for(var key in responseData){
-    //             const contact = JSON.parse(key);
-    //             tmpContacts.push(contact);
-    //         }
-    //         this.setState({
-    //             contacts: tmpContacts
-    //         })
-    //     })
-    //     .catch(error => {
-    //         console.log('Error fetching and parsing data.', error);
-    //     });
-    // }
+    getContacts(){
+        //grabs the contacts before the component is added to the dom
+        fetch(`http://127.0.0.1:5000/api/contacts=${this.props.location.state.username}`)
+        .then(response => response.json())
+        .then(responseData => {
+            const tmpContacts = [];
+            for(var key in responseData){
+                const contact = JSON.parse(key);
+                tmpContacts.push(contact);
+            }
+            this.setState({
+                contacts: tmpContacts
+            })
+        })
+        .catch(error => {
+            console.log('Error fetching and parsing data.', error);
+        });
+    }
 
     deleteContact(){
         var userToDelete = {
-            userID: this.state.username,
+            userID: this.props.location.state.username,
             firstLast: this.state.delete
         }
         fetch('http://127.0.0.1:5000/api/delete_contact',{
@@ -145,7 +145,7 @@ class Home extends Component{
                         <InputGroup>
                             <Input placeholder="Search for a name, number or email" onChange={(e) => this.getInfo(e, "search")}/>
                             <InputGroupAddon addonType="append">
-                                <Button outline color="warning">Search</Button>
+                                <Button outline color="warning" onClick={() => this.getContacts()}>Search</Button>
                             </InputGroupAddon>
                         </InputGroup>
                     </FormGroup>
