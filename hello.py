@@ -47,10 +47,14 @@ def get_contacts(user):
     cursor = db.cursor();
 
     cursor.execute("SELECT * FROM contact")
-
     rows = cursor.fetchall()
-    resp = jsonify(rows)
-    return resp
+
+    contacts = []
+    for row in rows:
+        contacts.append({'id':row[0], 'name':row[1], 'number':row[2], 'email':row[3], 'userid':row[4]})
+    x = jsonify(contacts)
+    print(x)
+    return x
 
 @app.route('/api/create_user=<name>&<password>', methods=['PUT'])
 def create_user(name,password):
