@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react';
-import {UncontrolledAlert, Form, FormGroup, Input, InputGroup, InputGroupAddon, Button} from 'reactstrap';
+import {UncontrolledAlert, Form, FormGroup, Input, InputGroup, InputGroupAddon, Button, ListGroup, ListGroupItem} from 'reactstrap';
 import Header from './Header';
 
 class Home extends Component{
@@ -14,13 +14,16 @@ class Home extends Component{
             search: '',
             contacts: [],
             successDelete: false,
-            successAdd: false
+            successAdd: false,
+            successShow: false
         }
         this.getInfo = this.getInfo.bind(this);
         this.deleteContact = this.deleteContact.bind(this);
         this.addContact = this.addContact.bind(this);
         this.showDeleteAlert = this.showDeleteAlert.bind(this);
         this.showAddAlert = this.showAddAlert.bind(this);
+        this.getContacts = this.getContacts.bind(this);
+
     }
     getInfo = (e, stateField) => {
         this.setState({
@@ -33,14 +36,12 @@ class Home extends Component{
         fetch(`http://127.0.0.1:5000/api/contacts=${this.props.location.state.username}`)
         .then(response => response.json())
         .then(responseData => {
-            const tmpContacts = [];
-            for(var key in responseData){
-                const contact = JSON.parse(key);
-                tmpContacts.push(contact);
-            }
+          console.log(responseData);
             this.setState({
-                contacts: tmpContacts
+                contacts: responseData,
+                successShow: true
             })
+            console.log(this.state.contacts[0])
         })
         .catch(error => {
             console.log('Error fetching and parsing data.', error);
@@ -68,6 +69,22 @@ class Home extends Component{
           }
         })
         .catch(error => console.error('Error:', error));
+    }
+
+    showContacts(){
+      if(this.state.successShow){
+        console.log(this.state.contacts.length)
+        var ul = document.getElementById("list");
+        for(var i = 0; i < this.state.contacts.length; i++){
+          var contact = this.state.contacts[i].name;
+          var number = this.state.contacts[i].number;
+          var email = this.state.contacts[i].email;
+          var li = document.createElement("ListGroupItem");
+          li.textContent = contact;
+          ul.append(li)
+        }
+      }
+      else return null
     }
 
     showAddAlert(){
@@ -149,6 +166,9 @@ class Home extends Component{
                             </InputGroupAddon>
                         </InputGroup>
                     </FormGroup>
+                    <ListGroup id="list">
+                      {this.showContacts()}
+                    </ListGroup>
                     {this.showDeleteAlert()}
                     {this.showAddAlert()}
                 </Form>
