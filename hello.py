@@ -39,15 +39,37 @@ def login(name,password):
 
     return jsonify({"success": True})
 
+@app.route('/api/contacts=<user>', methods=['GET'])
+def get_contacts(user):
+    #dont forget to sanitize inputs
+    db = db_connect()
+    try:
+        cursor = db.cursor()
+        print(user)
+        input = str(user)
+        print(input)
+        cmd = "SELECT * FROM contact WHERE User_UserID =(%s)"
+        cursor.execute(cmd,(input,))
 
+        rows = cursor.fetchall() 
 
+        resp = jsonify(rows)
+        print(request.headers)
+        contacts = []
+        for row in rows:
+            contacts.append({'id':row[0], 'name':row[1], 'number':row[2], 'email':row[3], 'userid':row[4]})
+        x = jsonify(contacts)
+        print(x)
+        return x
 
-    contacts = []
-    for row in rows:
-        contacts.append({'id':row[0], 'name':row[1], 'number':row[2], 'email':row[3], 'userid':row[4]})
-    x = jsonify(contacts)
-    print(x)
-    return x
+    except Exception as e:
+        db_close(cursor,db)
+        print(e)
+        return jsonify({"success": False,"message":e})
+
+    finally:
+        db_close(cursor,db)
+
 
 @app.route('/api/create_user=<name>&<password>', methods=['PUT'])
 def create_user(name,password):
