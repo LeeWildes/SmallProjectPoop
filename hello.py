@@ -3,10 +3,11 @@ from flask import request, jsonify, Response
 from flask import render_template
 import os
 from passlib.hash import sha256_crypt
-
+from flask_cors import CORS
 import mysql.connector
 
 app = Flask(__name__)
+CORS(app)
 
 ## Users
 
@@ -38,10 +39,37 @@ def login(name,password):
 
     return jsonify({"success": True})
 
-
-@app.route('/api/contacts', methods=['GET'])
+@app.route('/api/contacts=<user>', methods=['GET'])
 def get_contacts(user):
-    return True
+    #dont forget to sanitize inputs
+    db = db_connect()
+    try:
+        cursor = db.cursor()
+        print(user)
+        input = str(user)
+        print(input)
+        cmd = "SELECT * FROM contact WHERE User_UserID =(%s)"
+        cursor.execute(cmd,(input,))
+
+        rows = cursor.fetchall() 
+
+        resp = jsonify(rows)
+        print(request.headers)
+        contacts = []
+        for row in rows:
+            contacts.append({'id':row[0], 'name':row[1], 'number':row[2], 'email':row[3], 'userid':row[4]})
+        x = jsonify(contacts)
+        print(x)
+        return x
+
+    except Exception as e:
+        db_close(cursor,db)
+        print(e)
+        return jsonify({"success": False,"message":e})
+
+    finally:
+        db_close(cursor,db)
+
 
 @app.route('/api/create_user=<name>&<password>', methods=['PUT'])
 def create_user(name,password):
@@ -127,52 +155,62 @@ def delete_user(user):
 ## Contacts
 
 @app.route('/api/create_contact', methods=['PUT'])
-def create_contact(userId, name, number, email):
-	db =  db_connect()
+def create_contact():
+    db =  db_connect()
 
-	try:
-		#check if contact already exists
+    x = request.get_json()
+    try:
+        #check if contact already exists
 
-		#need to create a contact ID first.
+        #need to create a contact ID first.
+        print(x)
+        cursor = db.cursor(buffered=True)
+        name = str(x["first"]) + " "+ str(x["last"])
+        username = x["userID"]
+        print(username)
+        cursor.execute("SELECT UserID FROM user WHERE UserName = %s",(str(username),))
+        userId = cursor.fetchone()[0]
+        cursor.execute("SELECT MAX(contactID) FROM contact;")
+        id = cursor.fetchone()[0]
+        id = int(id or 0) + 1
+        cursor.execute("INSERT into contact(contactID, Name, Number, Email, User_UserID) VALUES(%s, %s, %s, %s, %s)", (id, name, x["number"], x["email"], userId))
 
-		cursor.execute("INSERT into contact(contactID, Name, Number, Email, User_UserID)
-						VALUES(%s, %s, %s, %s, %s)", (contactID, name, number, email, userId))
+        db.commit()
 
-		db.commit()
+    except Exception as e:
+        db_close(cursor, db)
+        print(e)
+        return jsonify({"success": False, "message": e})
 
-	except Exception as e:
-		db_close(cursor, db)
-		print(e)
-		return jsonify({"success": False, "message": e})
-
-	finally:
-		db_close(cursor, db)
-    	return jsonify({"success": True}) #am i still returning 200 or is this fine?
+    finally:
+        db_close(cursor, db)
+        return jsonify({"success": True})
 
 @app.route('/api/delete_contact', methods=['DELETE'])
-def delete_contact(userId, contactId):
-	db = db_connect()
+def delete_contact():
+    db = db_connect()
 
-	try:
-		cursor = db.cursor(buffered = True)
-		#check if contact exists
+    x = request.get_json()
+    try:
+        cursor = db.cursor(buffered = True)
+        #check if contact exists
 
-		#select the correct user id for the contact
-		#cursor.execute("SELECT User_UserID FROM contact WHERE UserID = %s", (userId))
+        #select the correct user id for the contact
+        #cursor.execute("SELECT User_UserID FROM contact WHERE UserID = %s", (userId))
 
-		#delete from the table
-		cursor.execute("DELETE FROM contact WHERE contactID = %s", (contactId))
-		db.commit()
+        #delete from the table
+        cursor.execute("DELETE FROM contact WHERE name = %s", (x["firstLast"],))
+        db.commit()
 
-		#check if contact deleted
+    #check if contact deleted
 
-	except Exception as e:
-		db_close(cursor, db)
-		print(e)
-		return jsonify({"success": False, "message": "Contact not deleted"})
+    except Exception as e:
+        db_close(cursor, db)
+        print(e)
+        return jsonify({"success": False, "message": "Contact not deleted"})
 
-	finally:
-		db_close(cursor, db)
+    finally:
+        db_close(cursor, db)
 
     return jsonify({"success": True})
 

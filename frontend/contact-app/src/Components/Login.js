@@ -44,7 +44,7 @@ class Login extends Component{
             username: this.state.username,
             password: this.state.password
         }
-        fetch(`/api/create_user=${user.username}&${user.password}`, {
+        fetch(`http://127.0.0.1:5000/api/create_user=${user.username}&${user.password}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -55,6 +55,7 @@ class Login extends Component{
         .catch(error => console.error('Error:', error));
         this.setRedirect();
     }
+
     
     checkUnPwError(){
         var pass = '';
@@ -76,6 +77,7 @@ class Login extends Component{
             return null
         }
     }
+
 
     render(){
         return(
