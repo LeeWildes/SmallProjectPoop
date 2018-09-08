@@ -72,7 +72,7 @@ class Home extends Component{
     }
 
     showContacts(){
-      if(this.state.successShow){
+    if(this.state.successShow){
         console.log(this.state.contacts.length)
         var ul = document.getElementById("list");
         for(var i = 0; i < this.state.contacts.length; i++){
@@ -81,7 +81,10 @@ class Home extends Component{
           var email = this.state.contacts[i].email;
           var li = document.createElement("ListGroupItem");
           li.textContent = contact;
-          ul.append(li)
+          if(li.textContent.toLowerCase().includes(this.state.search.toLowerCase())){
+			         ul.append(li)
+		  }
+
         }
       }
       else return null

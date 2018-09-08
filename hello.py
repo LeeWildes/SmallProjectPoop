@@ -44,14 +44,17 @@ def get_contacts(user):
     #dont forget to sanitize inputs
     db = db_connect()
     try:
-        cursor = db.cursor()
+        cursor = db.cursor(buffered=True)
         print(user)
         input = str(user)
         print(input)
+        cursor.execute("SELECT UserId FROM user WHERE UserName = %s", (input,))
+        input = str(cursor.fetchone()[0])
+
         cmd = "SELECT * FROM contact WHERE User_UserID =(%s)"
         cursor.execute(cmd,(input,))
 
-        rows = cursor.fetchall() 
+        rows = cursor.fetchall()
 
         resp = jsonify(rows)
         print(request.headers)
@@ -60,7 +63,6 @@ def get_contacts(user):
             contacts.append({'id':row[0], 'name':row[1], 'number':row[2], 'email':row[3], 'userid':row[4]})
         x = jsonify(contacts)
         print(x)
-        return x
 
     except Exception as e:
         db_close(cursor,db)
@@ -69,6 +71,9 @@ def get_contacts(user):
 
     finally:
         db_close(cursor,db)
+
+    return x
+
 
 
 @app.route('/api/create_user=<name>&<password>', methods=['PUT'])
