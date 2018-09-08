@@ -56,6 +56,28 @@ class Login extends Component{
         this.setRedirect();
     }
 
+    
+    checkUnPwError(){
+        var pass = '';
+        fetch('/api/login=<name>&<password>')
+        .then(response => response.json())
+        .then(responseData => {
+            pass = responseData.success
+        })
+
+        if(!pass)
+        {
+            return(
+                <Alert color="danger">
+                    Username or password incorrect!
+                </Alert>
+            )
+        }
+        else{
+            return null
+        }
+    }
+
 
     render(){
         return(
@@ -77,6 +99,7 @@ class Login extends Component{
                         <Button color="warning" block onClick={this.setRedirect}>
                             Login
                         </Button>
+
                         {this.redirectTo()}
                     </Form>
                 </Container>
