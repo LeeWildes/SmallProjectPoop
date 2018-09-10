@@ -15,7 +15,8 @@ class Home extends Component{
             contacts: [],
             successDelete: false,
             successAdd: false,
-            successShow: false
+            successShow: false,
+            contactsDisplayed: true
         }
         this.getInfo = this.getInfo.bind(this);
         this.deleteContact = this.deleteContact.bind(this);
@@ -46,6 +47,7 @@ class Home extends Component{
         .catch(error => {
             console.log('Error fetching and parsing data.', error);
         });
+        this.setState({contactsDisplayed: false})
     }
 
     deleteContact(){
@@ -73,19 +75,32 @@ class Home extends Component{
 
     showContacts(){
     if(this.state.successShow){
+        if(this.state.contactsDisplayed){
+          return
+        }
         console.log(this.state.contacts.length)
         var ul = document.getElementById("list");
+
+        // this whie loop clears out the search when another thing is being searched
+        while (ul.firstChild) {
+          ul.removeChild(ul.firstChild);
+        }
+
         for(var i = 0; i < this.state.contacts.length; i++){
           var contact = this.state.contacts[i].name;
           var number = this.state.contacts[i].number;
           var email = this.state.contacts[i].email;
           var li = document.createElement("ListGroupItem");
-          li.textContent = contact;
+          // var li = React.createElement(ListGroupItem, {href: contact}, contact + ' ' + number + ' ' + email);
+          li.textContent = contact + ' ' + number + ' ' + email;
+          // if(contact.toLowerCase().includes(this.state.search.toLowerCase())){
           if(li.textContent.toLowerCase().includes(this.state.search.toLowerCase())){
-			         ul.append(li)
-		  }
+              // this is what prints out the info
+              ul.append(li)
+		      }
 
         }
+        this.setState({contactsDisplayed: true})
       }
       else return null
     }
