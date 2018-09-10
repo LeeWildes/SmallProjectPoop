@@ -9,8 +9,14 @@ class Login extends Component{
         this.state = {
             username: '',
             password: '',
-            redirect: false
+            redirect: false,
+            loginInvalid: false,
+            createdUser: false
         }
+        this.getInfo = this.getInfo.bind(this);
+        this.setRedirect = this.setRedirect.bind(this);
+        this.checkLogin = this.checkLogin.bind(this);
+        this.createUser = this.createUser.bind(this);
     }
 
     getInfo = (e, inputField) => {
@@ -24,18 +30,35 @@ class Login extends Component{
         .then(response => response.json())
         .then(responseData => {
             if(responseData.success){
-                this.setRedirect();
+                return this.setRedirect();
             }
             else{
-                return(
-                    <Alert color="danger">
-                        {responseData.message}
-                    </Alert>
-                )
+              this.setState({
+                loginInvalid: true
+              })
             }
         })
     }
-    
+
+    showAlert(){
+      if(this.state.loginInvalid){
+        return(
+          <Alert color="danger" className = "mt-3">
+          INCORRECT PASSWORD
+          </Alert>
+        )
+      }
+    }
+
+    showCreate(){
+      if(this.state.createdUser){
+        return(
+          <Alert color="success" className = "mt-3">
+          Succesfully Created User
+          </Alert>
+        )
+      }
+    }
 
     setRedirect = () => {
         this.setState({
@@ -67,13 +90,12 @@ class Login extends Component{
             }
         })
         .then(res => res.json())
-        .then(response => console.log('Success:', JSON.stringify(response)))
+        .then(response => {
+          this.setState({
+            createdUser: true
+          })
+        })
         .catch(error => console.error('Error:', error));
-        return(
-            <Alert color="success">
-                Successfull created user!
-            </Alert>
-        )
     }
 
 
@@ -98,6 +120,8 @@ class Login extends Component{
                             Login
                         </Button>
                         {this.redirectTo()}
+                        {this.showAlert()}
+                        {this.showCreate()}
                     </Form>
                 </Container>
             </div>
