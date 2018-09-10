@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Form, FormGroup, Label, Input, Container, Button} from 'reactstrap';
+import {Alert, Form, FormGroup, Label, Input, Container, Button} from 'reactstrap';
 import {Redirect} from 'react-router-dom';
 import Header from './Header';
 
@@ -19,7 +19,23 @@ class Login extends Component{
         })
     }
 
-    //create a method that checks validity before login
+    checkLogin() {
+        fetch(`http://127.0.0.1:5000/api/login=${this.state.username}&${this.state.password}`)
+        .then(response => response.json())
+        .then(responseData => {
+            if(responseData.success){
+                this.setRedirect();
+            }
+            else{
+                return(
+                    <Alert color="danger">
+                        {responseData.message}
+                    </Alert>
+                )
+            }
+        })
+    }
+    
 
     setRedirect = () => {
         this.setState({
@@ -53,7 +69,11 @@ class Login extends Component{
         .then(res => res.json())
         .then(response => console.log('Success:', JSON.stringify(response)))
         .catch(error => console.error('Error:', error));
-        this.setRedirect();
+        return(
+            <Alert color="success">
+                Successfull created user!
+            </Alert>
+        )
     }
 
 
@@ -74,7 +94,7 @@ class Login extends Component{
                         <Button color="secondary" block onClick={() => this.createUser()}>
                             Create User
                         </Button>
-                        <Button color="warning" block onClick={this.setRedirect}>
+                        <Button color="warning" block onClick={() => this.checkLogin()}>
                             Login
                         </Button>
                         {this.redirectTo()}
