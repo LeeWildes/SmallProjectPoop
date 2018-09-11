@@ -246,7 +246,7 @@ def hello():
 ## redundant stuff
 def db_connect():
     ## this should be in a config file
-    return mysql.connector.connect(host='localhost',database='mydb',user='root',password='root')
+    return mysql.connector.connect(host='us-cdbr-iron-east-01.cleardb.net',database='heroku_65eaf5ebe900a44',user='b0de1b7efc87c8',password='b9157910')
 
 def db_close(cursor,db):
     cursor.close()
