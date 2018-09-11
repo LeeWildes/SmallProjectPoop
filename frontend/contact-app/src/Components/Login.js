@@ -26,7 +26,7 @@ class Login extends Component{
     }
 
     checkLogin() {
-        fetch(`http://127.0.0.1:5000/api/login=${this.state.username}&${this.state.password}`)
+        fetch(`https://limitless-reaches-61639.herokuapp.com/api/login=${this.state.username}&${this.state.password}`)
         .then(response => response.json())
         .then(responseData => {
             if(responseData.success){
@@ -83,7 +83,7 @@ class Login extends Component{
             username: this.state.username,
             password: this.state.password
         }
-        fetch(`http://127.0.0.1:5000/api/create_user=${user.username}&${user.password}`, {
+        fetch(`https://limitless-reaches-61639.herokuapp.com/api/create_user=${user.username}&${user.password}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'

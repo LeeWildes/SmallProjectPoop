@@ -34,7 +34,7 @@ class Home extends Component{
 
     getContacts(){
         //grabs the contacts before the component is added to the dom
-        fetch(`http://127.0.0.1:5000/api/contacts=${this.props.location.state.username}`)
+        fetch(`https://limitless-reaches-61639.herokuapp.com/api/contacts=${this.props.location.state.username}`)
         .then(response => response.json())
         .then(responseData => {
           console.log(responseData);
@@ -55,7 +55,7 @@ class Home extends Component{
             userID: this.props.location.state.username,
             firstLast: this.state.delete
         }
-        fetch('http://127.0.0.1:5000/api/delete_contact',{
+        fetch('https://limitless-reaches-61639.herokuapp.com/api/delete_contact',{
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -134,7 +134,7 @@ class Home extends Component{
             number: this.state.addNumber,
             email: this.state.addEmail
         }
-        fetch('http://127.0.0.1:5000/api/create_contact', {
+        fetch('https://limitless-reaches-61639.herokuapp.com/api/create_contact', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'

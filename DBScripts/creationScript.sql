@@ -16,16 +16,16 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- -----------------------------------------------------
 -- Schema mydb
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
-USE `mydb` ;
+CREATE SCHEMA IF NOT EXISTS `heroku_65eaf5ebe900a44` DEFAULT CHARACTER SET utf8 ;
+USE `heroku_65eaf5ebe900a44` ;
 
 -- -----------------------------------------------------
 -- Table `mydb`.`User`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`User` (
+CREATE TABLE IF NOT EXISTS `heroku_65eaf5ebe900a44`.`User` (
   `UserID` INT NOT NULL,
   `UserName` VARCHAR(45) NULL,
-  `Password` VARCHAR(45) NULL,
+  `Password` VARCHAR(100) NULL,
   PRIMARY KEY (`UserID`))
 ENGINE = InnoDB;
 
@@ -33,7 +33,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`Contact`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`Contact` (
+CREATE TABLE IF NOT EXISTS `heroku_65eaf5ebe900a44`.`Contact` (
   `ContactID` INT NOT NULL,
   `Name` VARCHAR(45) NULL,
   `Number` VARCHAR(45) NULL,
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Contact` (
   INDEX `fk_Contact_User_idx` (`User_UserID` ASC),
   CONSTRAINT `fk_Contact_User`
     FOREIGN KEY (`User_UserID`)
-    REFERENCES `mydb`.`User` (`UserID`)
+    REFERENCES `heroku_65eaf5ebe900a44`.`User` (`UserID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
